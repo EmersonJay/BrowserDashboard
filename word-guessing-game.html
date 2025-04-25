@@ -1,0 +1,135 @@
+// Author: Emerson Jay C. Ricarte
+    // Course: BSIT 2B
+    // Word Guessing Game
+    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Word Guessing Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-color: #f0f9f0;
+    }
+    h1 {
+      color: #107810;
+    }
+    #wordList {
+      margin-bottom: 20px;
+      font-size: 16px;
+      color: #333;
+    }
+    #message {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    #restart {
+      display: none;
+      margin-top: 10px;
+    }
+    input, button {
+      padding: 8px 12px;
+      font-size: 16px;
+      margin: 5px;
+    }
+    button {
+      background-color: #1fa31f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #157915;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Word Guessing Game</h1>
+  <p id="wordList"><strong>Possible Words:</strong> apple, banana, grape, orange, peach, kiwi, mango</p>
+  <p>Guess the secret word!</p>
+  <input type="text" id="guessInput" placeholder="Enter your guess" />
+  <button id="submitBtn">Submit</button>
+  <button id="restart">Play Again</button>
+
+  <p id="message"></p>
+
+  <script>
+    // Author: Emerson Jay C. Ricarte
+    // Course: BSIT 2B
+    // Word Guessing Game
+
+    const words = ["apple", "banana", "grape", "orange", "peach", "kiwi", "mango"];
+    const maxAttempts = 5;
+    let attemptsLeft = maxAttempts;
+    let secretWord = words[Math.floor(Math.random() * words.length)];
+    let gameOver = false;
+
+    console.log("Secret word:", secretWord); // For testing
+
+    const input = document.getElementById("guessInput");
+    const submitBtn = document.getElementById("submitBtn");
+    const message = document.getElementById("message");
+    const restartBtn = document.getElementById("restart");
+
+    submitBtn.addEventListener("click", handleGuess);
+    restartBtn.addEventListener("click", restartGame);
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") handleGuess();
+    });
+
+    function handleGuess() {
+      if (gameOver) return;
+
+      const guess = input.value.trim().toLowerCase();
+      input.value = "";
+
+      if (guess === "") {
+        updateMessage(`Please enter a guess. You have ${attemptsLeft} attempts left.`, "orange");
+        return;
+      }
+
+      if (guess === secretWord) {
+        updateMessage("🎉 Congratulations! You guessed the secret word!", "green");
+        endGame();
+      } else {
+        attemptsLeft--;
+        if (attemptsLeft > 0) {
+          updateMessage(`❌ Incorrect. ${attemptsLeft} attempt(s) left. Try again!`, "red");
+        } else {
+          updateMessage(`💀 Game over! The secret word was '${secretWord}'.`, "darkred");
+          endGame();
+        }
+      }
+    }
+
+    function updateMessage(msg, color = "black") {
+      message.textContent = msg;
+      message.style.color = color;
+    }
+
+    function endGame() {
+      gameOver = true;
+      input.disabled = true;
+      submitBtn.disabled = true;
+      restartBtn.style.display = "inline-block";
+    }
+
+    function restartGame() {
+      secretWord = words[Math.floor(Math.random() * words.length)];
+      attemptsLeft = maxAttempts;
+      gameOver = false;
+      input.value = "";
+      input.disabled = false;
+      submitBtn.disabled = false;
+      message.textContent = "";
+      restartBtn.style.display = "none";
+      console.log("New secret word:", secretWord);
+    }
+  </script>
+</body>
+</html>
